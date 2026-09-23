@@ -1,98 +1,73 @@
-users: list[dict] = [{
-    'username': 'Val',
-    'password': 'val',
-    'pin': '0000',
-    'bal': 12.34,
-    'is_logged_in': False
-}]
 
-def LiteWallet():
-    payload = auth()
-    if payload['user'] is None:
-        print(payload['status'])
-        return
-    user = payload['user']
-    getDashboard(user)
+def maximum(*args):
+    maximum_number = args[0]
+    for i in args:
+        if i > maximum_number:
+            maximum_number = i
+    return maximum_number
 
-def getDashboard(user):
-    while user is not None:
-        print(f'Hello, {user['username']}!')
-        opt = input('1. Check Balance\n2. Withdraw\n3. Deposit\n4. Log out\nSelect an option: ')
-        if opt == '1':
-            payload = getBalance(user)
-            if payload['user'] is None:
-                print(payload['status'])
-                return
-    
-def getBalance(user):
-    err_count = 3
-    pin = input('Please input your Pin: ')
-    while err_count > 1:
-        if pin == user['pin']:
-            print(f'Hello {user['username']}!\nYour balance is: {user['bal']}')
-            opt = input('1. Return')
-            return {
-                'status': 'Success',
-                'user': user
-            }
-        else:
-            err_count -= 1
-            input(f'Invalid Pin. {err_count} chance(s) left.\nInput Pin: ')
-    return {
-        'status': 'Err: Too many invalid attempts.\nLogging out...',
-        'user': None
-        }
-    
 
-def auth():
-    auth_opt = input('1. Login\n2. Register\nSelect an option: ')
-    err_count = 3
-    while err_count > 1 and auth_opt not in ('1','2'):
-        err_count -= 1
-        auth_opt = input(f'Valid tries left: {err_count}.\nPlease try again: ')
-    if auth_opt == '1':
-        return loginUser()
-    if auth_opt == '2':
-        return registerUser()
-    return {
-        'status': 'Err: Too manu invalid tries.\nGoodbye.',
-        'user': None
-    }
+maximum_number = maximum(1,2,3,4,5,6,7,7,9)
+print(maximum_number)
 
-def loginUser():
-    print('Login.\nInput your details...')
-    u = input('Username: ')
-    p = input('Password: ')
+def greet(name="friend"):
+    return f'goodmorning  {name}'
+
+print(greet())
+
+
+def exams_scores(*args):
+    total_score = 0
+    total_student = len(args)
+    for arg in args:
+        total_score += arg
+    average_score = total_score/total_student
+    return average_score
+average = exams_scores(78,76,46,25,57)
+print(average)
+
+def player_profile(**kwargs):
+    player_details = []
+    player_details.append(kwargs)
+    return player_details
+
+player_details = player_profile(name = "grey",age = 29,profession = "Ai engineer")
+
+
+player_details = player_profile(name = "john",age = 25,profession = "Ai engineer")
+print(player_details)
+
+users = []
+
+
+def passwordvalidator(password:str)->str:
+   if password == "":
+       print("invalid password")
+       return False
+   if len(password) < 8:
+       return False,"character must be equal to 8"
+   has_letter = any(char.isalpha() for char in password)
+   has_number = any(char.isdigit() for char in password)
+   if not (has_number and has_letter):
+       return False,"please enter a valid password"
+   return True,"password valid"
+
+print(passwordvalidator("abadkgsh23ssgs"))
+
+
+
+def create_account():
+    username = input("enter fullname ")
+    clean_name = username.strip().lower()
+    password = input("enter password 8 characters")
+    passwordvalidator(password)
     for user in users:
-        if user['username'] == u and user['password'] == p:
-            user['is_logged_in'] = True
-            return {
-                'status': 'Success',
-                'user': user
-            }
-    return {
-        'status': 'Invalid credentials',
-        'user': None
-    }
+        if  user["name"] in users:
+            print("sorry user already")
+            return login()
+    users.append({"name":clean_name,"password":password})
+    return users
+users = create_account()
+print(users)
 
-def registerUser():
-    print('User Sign Up.\nInput your details...')
-    username = input('Username: ') 
-    password = input('Password: ') 
-    pin = input('Pin: ') 
-    ini_dep = input('Initial Deposit: ')
-    if username != '' and password != '' and pin != '' and ini_dep != '':
-        users.append({
-            'username': username,
-            'password': password,
-            'pin': pin,
-            'bal': ini_dep,
-            'is_logged_in': False
-        })
-        return loginUser()
-    return {
-        'status': 'Err: Couldn\'t register user',
-        'user': None
-    }
-    
-LiteWallet()
+
